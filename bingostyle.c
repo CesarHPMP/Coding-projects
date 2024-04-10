@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//Programa que faz cartelas de bingo em folhas A4, contendo 12 cartelas por folha
 
 #include <stdio.h>
 #include <stdlib.h>
