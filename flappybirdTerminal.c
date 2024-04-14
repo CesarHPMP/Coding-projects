@@ -29,7 +29,7 @@ void run(Bird *passaro, Column *coluna);
 void createmap(Bird *passaro, Column *coluna);
 void newframe(Bird *passaro, Column *coluna);
 void newcolumn(Position *coluna);
-
+int retry(void);
 
 size_t FRAME_DELAY_US = 100000; // Frame update interval in microseconds
 
@@ -73,41 +73,60 @@ int verpos(Bird passaro, Column coluna) {
 void run(Bird *passaro, Column *coluna) {
     int counter = 0;
     int speed = 0;
-
+    int modifier = 0;
+    
     createmap(passaro, coluna);
     newframe(passaro, coluna);
 
-    while (!verpos(*passaro, *coluna)) {
-        char input = getch();
-        if (input == BIRD_UP && passaro->posy > 0) {
-            passaro->posy -= 1;
-        } else if (input == BIRD_DOWN && passaro->posy < SCREEN_HEIGHT - 1) {
-            passaro->posy += 1;
-        }
-
-        if (counter == 4) { // Move bird down every 3 frames without input
-            if (passaro->posy < SCREEN_HEIGHT - 1) {
+    do {
+        while (!verpos(*passaro, *coluna)) {
+            char input = getch();
+            if (input == BIRD_UP && passaro->posy > 0) {
+                passaro->posy -= 1;
+            } else if (input == BIRD_DOWN && passaro->posy < SCREEN_HEIGHT - 1) {
                 passaro->posy += 1;
             }
-            counter = 0; // Reset counter
-	    speed++;
-	    if(speed == 100)
-		    FRAME_DELAY_US -= 100;
+ 
+            if (counter == 4) { // Move bird down every 3 frames without input
+                if (passaro->posy < SCREEN_HEIGHT - 1) {
+                    passaro->posy += 1;
+                }
+                counter = 0; // Reset counter
+                speed++;
+                if(speed == 100)
+                {
+            	    FRAME_DELAY_US -= 100;
+            	    modifier++;
+            	}
+ 
+            } else {
+                counter++; // Increment counter
+            }
+ 
+            for (int i = 0; i < MAX; i++) {
+                coluna->posit[i].posx -= 1;
+                if (coluna->posit[i].posx < 0)
+                    newcolumn(&coluna->posit[i]);
+            }
+ 
+            newframe(passaro, coluna);
+            usleep(FRAME_DELAY_US);
+        }
 
+        // Check if the game should be retried
+        if (retry()) {
+            // Restart the game
+            createmap(passaro, coluna);
+            newframe(passaro, coluna);
+            FRAME_DELAY_US += (modifier * 100);
+            modifier = 0;
         } else {
-            counter++; // Increment counter
+            // Quit the game
+            break;
         }
-
-        for (int i = 0; i < MAX; i++) {
-            coluna->posit[i].posx -= 1;
-            if (coluna->posit[i].posx < 0)
-                newcolumn(&coluna->posit[i]);
-        }
-
-        newframe(passaro, coluna);
-        usleep(FRAME_DELAY_US);
-    }
+    } while (1);
 }
+
 
 void createmap(Bird *passaro, Column *coluna) {
     srand(time(NULL)); // Seed for random number generation
@@ -156,6 +175,30 @@ void newframe(Bird *passaro, Column *coluna) {
     refresh(); // Refresh the screen to show changes
 }
 
+int retry()
+{
+    clear();
+    
+    nodelay(stdscr, FALSE); // Set delay to wait for getch()
+    
+    mvprintw(0, 0, "Press Q to quit and any key to retry");
+    
+    refresh();
+
+    char key = getch(); // Get the next character
+
+    nodelay(stdscr, TRUE); // Set no delay for getch()
+    
+    if(key == 'q' || key == 'Q')
+        return 0; // Quit the game
+    else
+        return 1; // Continue the game
+}
+
+
+
+
+
 void newcolumn(Position *coluna)
 {
 	if(coluna->posy < SCREEN_HEIGHT/2)
@@ -174,11 +217,3 @@ void newcolumn(Position *coluna)
 	}
 
 }
-
-
-
-
-
-
-
-
