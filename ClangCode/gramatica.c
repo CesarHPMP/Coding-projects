@@ -300,12 +300,7 @@ void process_word(Node *root, Node *ruletree, gramatica gram, char *word) {// pr
         return;
     }
 
-    // Allocate memory for the new node
-    ruletree = (Node *)malloc(sizeof(Node));
-    if (ruletree == NULL) {
-        printf("Memory allocation failed for new_node.\n");
-        return;
-    }
+    
     root = (Node *)malloc(sizeof(Node));
     if (root == NULL) {
         printf("Memory allocation failed for new_node.\n");
@@ -317,11 +312,9 @@ void process_word(Node *root, Node *ruletree, gramatica gram, char *word) {// pr
     else
         printf("\nNULL Token");
 
-    // Initialize the new node
-    (*new_node)->esq = NULL;
-    (*new_node)->dir = NULL;
-
-
+    // Adding new logic changes, iterate through char pointer only, no tree parsing.
+    // will add new loop and compare char for setting the new tree branch.
+    // per word char may be new tree?
 
     // Recursively process the left and right subtrees
     if (root->esq == NULL )
