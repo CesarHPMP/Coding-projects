@@ -365,40 +365,6 @@ void free_tree(Node *root) {
     free(root);
 }
 
-find_rule(Node *root, char *rule)
-{
-    if(root->token == rule)
-        return;
-    
-    while(rule == ' ' || rule == '\t')
-    {
-        rule++;
-    }
-
-    
-    for(int j = 0; rule[j] != ';')
-    {
-        if(rule[j] == ':')
-        {
-            n = 1;
-        }
-        if(n == 1)
-        {
-            for(int i = 0; root->token[i] != '\0'; i++)
-            {
-                if(root->token[i] == rule[j])
-                {
-                    printf("\nMatch Found!\n");
-                    return root;
-                }
-            }           
-        }
-    }
-    
-    return(find_rule(root->esq, rule));
-
-    find_rule(root->dir, rule);
-}
 
 
 
