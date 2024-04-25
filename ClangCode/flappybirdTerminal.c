@@ -5,8 +5,8 @@
 #include <time.h>
 
 #define MAX 5 // Maximum number of columns
-#define SCREEN_WIDTH 80
-#define SCREEN_HEIGHT 24 // Adjusted to fit within a standard terminal window
+#define SCREEN_WIDTH 165
+#define SCREEN_HEIGHT 55 // Adjusted to fit within a standard terminal window
 #define BIRD_UP 'w'
 #define BIRD_DOWN 's'
 
@@ -87,7 +87,7 @@ void run(Bird *passaro, Column *coluna) {
                 passaro->posy += 1;
             }
  
-            if (counter == 4) { // Move bird down every 3 frames without input
+	if (counter == 4) { // Move bird down every 3 frames without input
                 if (passaro->posy < SCREEN_HEIGHT - 1) {
                     passaro->posy += 1;
                 }
@@ -181,7 +181,7 @@ int retry()
     
     nodelay(stdscr, FALSE); // Set delay to wait for getch()
     
-    mvprintw(0, 0, "Press Q to quit and any key to retry");
+    mvprintw(SCREEN_HEIGHT/2, SCREEN_WIDTH/2, "Press Q to quit and any key to retry");
     
     refresh();
 
