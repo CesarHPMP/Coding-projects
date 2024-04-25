@@ -1,0 +1,48 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "CodeMain" ]
+  pull_request:
+    branches: [ "CodeMain" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Configure
+      run: |
+        ./configure
+        if [ $? -ne 0 ]; then
+          echo "Configure failed"
+          exit 1
+        fi
+      
+    - name: Make
+      run: |
+        make
+        if [ $? -ne 0 ]; then
+          echo "Make failed"
+          exit 1
+        fi
+      
+    - name: Make Check
+      run: |
+        make check
+        if [ $? -ne 0 ]; then
+          echo "Make check failed"
+          exit 1
+        fi
+      
+    - name: Make Distcheck
+      run: |
+        make distcheck
+        if [ $? -ne 0 ]; then
+          echo "Make distcheck failed"
+          exit 1
+        fi
