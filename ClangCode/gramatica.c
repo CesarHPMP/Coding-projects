@@ -23,7 +23,7 @@ int testvar(gramatica , char , size_t );
 void print_tree(Node *);
 void process_word(Node *, Node **, gramatica , char *);
 void free_tree(Node *);
-
+Node *find_rule(Node *, char *);
 
 int main(void) 
 {
@@ -282,11 +282,12 @@ void print_tree(Node *root) {
 }
 
 
-void process_word(Node *root, Node **new_node, gramatica gram, char *word) {
-    char *production_rule = gram.P;
+void process_word(Node *root, Node *ruletree, gramatica gram, char *word) {// process_word(palavra, &arvore, gram, word)
     char buff[64];
     bool s = false;
     int counter = 0;
+    char *production_rule =(char *)malloc(sizeof(gram.P));
+    production_rule = gram.P;
 
     // Skip leading whitespace characters in the production rule
     while (*production_rule == ' ' || *production_rule == '\t') {
@@ -300,48 +301,42 @@ void process_word(Node *root, Node **new_node, gramatica gram, char *word) {
     }
 
     // Allocate memory for the new node
-    *new_node = (Node *)malloc(sizeof(Node));
-    if (*new_node == NULL) {
+    ruletree = (Node *)malloc(sizeof(Node));
+    if (ruletree == NULL) {
         printf("Memory allocation failed for new_node.\n");
         return;
     }
+    root = (Node *)malloc(sizeof(Node));
+    if (root == NULL) {
+        printf("Memory allocation failed for new_node.\n");
+        return;
+    }
+
+    if(root->token != NULL)
+        printf("\nToken -> %s", root->token);
+    else
+        printf("\nNULL Token");
 
     // Initialize the new node
     (*new_node)->esq = NULL;
     (*new_node)->dir = NULL;
 
-    for (int j = 0; word[j] != '\0'; j++) { // Changed condition from word[j] != '\n' to word[j] != '\0'
-        while (*production_rule != ';') {
-            buff[counter++] = *production_rule;
-            production_rule++;
-        }
-        buff[counter] = '\0';
-        counter = 0;
 
-        for (int i = 0; buff[i] != '\0'; i++) {
-            if (buff[i] == ':') {
-                s = true;
-            }
-            if (buff[i] == word[j] && s == true) {
-                if (s == true) {
-                    for (int n = 0; n < counter; n++) {
-                        if (n % 2 == 0) {
-                            root = root->esq;
-                        } else {
-                            root = root->dir;
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     // Recursively process the left and right subtrees
-    if ((*new_node)->esq == NULL)
-        process_word(root, &((*new_node)->esq), gram, word);
+    if (root->esq == NULL )
+    {
+        printf("\nGoing Left\n");
+        root->esq = (*new_node);
+        process_word(root, &new_node, gram, word);
+    }
 
-    if ((*new_node)->dir == NULL)
-        process_word(root, &((*new_node)->dir), gram, word);
+    if (root->dir == NULL)
+    {
+        printf("\nGoing Right\n");
+        root->dir = (*new_node);
+        process_word(root->esq, &(*new_node), gram, word);
+    }
 }
 
 
@@ -349,6 +344,8 @@ void process_word(Node *root, Node **new_node, gramatica gram, char *word) {
 
 
 void free_tree(Node *root) {
+    int n = 0;
+
     if (root == NULL) {
         return;
     }
@@ -367,4 +364,42 @@ void free_tree(Node *root) {
     // Free memory for the node itself
     free(root);
 }
+
+find_rule(Node *root, char *rule)
+{
+    if(root->token == rule)
+        return;
+    
+    while(rule == ' ' || rule == '\t')
+    {
+        rule++;
+    }
+
+    
+    for(int j = 0; rule[j] != ';')
+    {
+        if(rule[j] == ':')
+        {
+            n = 1;
+        }
+        if(n == 1)
+        {
+            for(int i = 0; root->token[i] != '\0'; i++)
+            {
+                if(root->token[i] == rule[j])
+                {
+                    printf("\nMatch Found!\n");
+                    return root;
+                }
+            }           
+        }
+    }
+    
+    return(find_rule(root->esq, rule));
+
+    find_rule(root->dir, rule);
+}
+
+
+
 
