@@ -21,9 +21,8 @@ int gram_set(gramatica *);
 void gram_feed(Node *, char * );
 int testvar(gramatica , char , size_t );
 void print_tree(Node *);
-void process_word(Node *, Node **, gramatica , char *);
+void process_word(Node *, gramatica , char *, size_t );
 void free_tree(Node *);
-Node *find_rule(Node *, char *);
 
 int main(void) 
 {
@@ -62,7 +61,7 @@ int main(void)
     word = strdup(buff);
 
    
-    process_word(palavra, &arvore, gram, word); // Generating the word
+    process_word(palavra, gram, word, strlen(word)); // Generating the word
     printf("Generated word: %s\n", word); // Printing the generated word
 
     // Free allocated memory for the parse tree
@@ -282,41 +281,61 @@ void print_tree(Node *root) {
 }
 
 
-void process_word(Node *root, Node *ruletree, gramatica gram, char *word) {// process_word(palavra, &arvore, gram, word)
+void process_word(Node *root, gramatica gram, char *word, size_t trees) {// process_word(palavra, &arvore, gram, word)
     char buff[64];
     bool s = false;
-    int counter = 0;
+    int counter = 0, i = 0;
     char *production_rule =(char *)malloc(sizeof(gram.P));
     production_rule = gram.P;
+    memset(buff, '\0', sizeof(buff));
+
 
     // Skip leading whitespace characters in the production rule
     while (*production_rule == ' ' || *production_rule == '\t') {
         production_rule++;
     }
-
+    while (*word == ' ' || *word == '\t') {
+        word++;
+    }
     // Check if the production rule string is empty
     if (*production_rule == '\0') {
         printf("No production rules found.\n");
         return;
     }
 
-    
     root = (Node *)malloc(sizeof(Node));
     if (root == NULL) {
         printf("Memory allocation failed for new_node.\n");
         return;
     }
 
+    // Adding new logic changes, iterate through char pointer only, no tree parsing.
+    for(i = 0; *production_rule != ';'; i++)
+    {
+        buff[i] = *production_rule;
+        production_rule++;
+    }
+    buff[i+1] = '\0';
+
+    // will add new loop and compare char for setting the new tree branch.
+    for(i = 0; buff[i] != '\0'; i++)
+    {
+        if(buff[i] == ':')//setting for finding after variable branching
+            s = true;
+
+        if(s == true && buff[i] == *word)
+        {
+               strcpy(root->token, buff);
+        }
+    }
+    // per word char may be new tree? = still under assessment
+
     if(root->token != NULL)
         printf("\nToken -> %s", root->token);
     else
-        printf("\nNULL Token");
+        printf("\nNULL Token");   
 
-    // Adding new logic changes, iterate through char pointer only, no tree parsing.
-    // will add new loop and compare char for setting the new tree branch.
-    // per word char may be new tree?
-
-    // Recursively process the left and right subtrees
+    /*
     if (root->esq == NULL )
     {
         printf("\nGoing Left\n");
@@ -330,6 +349,7 @@ void process_word(Node *root, Node *ruletree, gramatica gram, char *word) {// pr
         root->dir = (*new_node);
         process_word(root->esq, &(*new_node), gram, word);
     }
+    */
 }
 
 
