@@ -322,7 +322,7 @@ void process_word(Node *root, gramatica gram, char *word, size_t trees) {// proc
     
     match = strchr(buff, *word);
     
-    if(match == NULL)//setting for when char is not present in str
+    if(match == NULL)
         1;
 
     
