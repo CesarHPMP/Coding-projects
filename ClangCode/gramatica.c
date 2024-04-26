@@ -282,18 +282,20 @@ void print_tree(Node *root) {
 
 
 void process_word(Node *root, gramatica gram, char *word, size_t trees) {// process_word(palavra, &arvore, gram, word)
-    char buff[64];
+    char *buff;
     bool s = false;
     int counter = 0, i = 0;
+    char *match;
     char *production_rule =(char *)malloc(sizeof(gram.P));
     production_rule = gram.P;
-    memset(buff, '\0', sizeof(buff));
-
+    memset(buff, '\0', sizeof(gram.P));
+    memset(match, '\0', sizeof(char));
 
     // Skip leading whitespace characters in the production rule
     while (*production_rule == ' ' || *production_rule == '\t') {
         production_rule++;
     }
+
     while (*word == ' ' || *word == '\t') {
         word++;
     }
@@ -317,17 +319,13 @@ void process_word(Node *root, gramatica gram, char *word, size_t trees) {// proc
     }
     buff[i+1] = '\0';
 
-    // will add new loop and compare char for setting the new tree branch.
-    for(i = 0; buff[i] != '\0'; i++)
-    {
-        if(buff[i] == ':')//setting for finding after variable branching
-            s = true;
+    
+    match = strchr(buff, *word);
+    
+    if(match == NULL)//setting for when char is not present in str
+        1;
 
-        if(s == true && buff[i] == *word)
-        {
-               strcpy(root->token, buff);
-        }
-    }
+    
     // per word char may be new tree? = still under assessment
 
     if(root->token != NULL)
