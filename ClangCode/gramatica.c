@@ -281,8 +281,21 @@ void print_tree(Node *root) {
 }
 
 
-void process_word(Node *root, gramatica gram, char *word, size_t trees) {// process_word(palavra, &arvore, gram, word)
+void process_word(Node *root, gramatica gram, char *word, size_t w) {// process_word(palavra, &arvore, gram, word)
    //rework whole function. 
+    int i = 0, j = 0;
+    char c[w];
+    root = (Node *)malloc(sizeof(Node));
+    if(root == NULL)
+        return -1;
+
+    for(i = 0; *word != '\0'; i++)
+    {
+        c[i] = *word;
+        word++;
+    }
+    
+    
 }
 
 
@@ -311,6 +324,40 @@ void free_tree(Node *root) {
     free(root);
 }
 
+void find_rule(char *rules, char var, char res)
+{
+    bool s = false;
+    char **p;
+
+    do
+    {
+        switch(*rules)
+        {
+            case ':':
+                s = true;
+                break;
+
+            case ';':
+                s = false;
+                break;
+
+            case var:
+                s = false;
+                *p = rules;
+                p++;
+                break;
+
+            case res:
+                s = true;
+                while(*rules != '\0')
+                    rules--;
+                *p = rules;
+                p++;
+                break;
+        }
+    }while(*rules != '\0');
+
+}
 
 
 
