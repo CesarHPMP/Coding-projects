@@ -282,72 +282,7 @@ void print_tree(Node *root) {
 
 
 void process_word(Node *root, gramatica gram, char *word, size_t trees) {// process_word(palavra, &arvore, gram, word)
-    char *buff;
-    bool s = false;
-    int counter = 0, i = 0;
-    char *match;
-    char *production_rule =(char *)malloc(sizeof(gram.P));
-    production_rule = gram.P;
-    memset(buff, '\0', sizeof(gram.P));
-    memset(match, '\0', sizeof(char));
-
-    // Skip leading whitespace characters in the production rule
-    while (*production_rule == ' ' || *production_rule == '\t') {
-        production_rule++;
-    }
-
-    while (*word == ' ' || *word == '\t') {
-        word++;
-    }
-    // Check if the production rule string is empty
-    if (*production_rule == '\0') {
-        printf("No production rules found.\n");
-        return;
-    }
-
-    root = (Node *)malloc(sizeof(Node));
-    if (root == NULL) {
-        printf("Memory allocation failed for new_node.\n");
-        return;
-    }
-
-    // Adding new logic changes, iterate through char pointer only, no tree parsing.
-    for(i = 0; *production_rule != ';'; i++)
-    {
-        buff[i] = *production_rule;
-        production_rule++;
-    }
-    buff[i+1] = '\0';
-
-    
-    match = strchr(buff, *word);
-    
-    if(match == NULL)
-        1;
-
-    
-    // per word char may be new tree? = still under assessment
-
-    if(root->token != NULL)
-        printf("\nToken -> %s", root->token);
-    else
-        printf("\nNULL Token");   
-
-    /*
-    if (root->esq == NULL )
-    {
-        printf("\nGoing Left\n");
-        root->esq = (*new_node);
-        process_word(root, &new_node, gram, word);
-    }
-
-    if (root->dir == NULL)
-    {
-        printf("\nGoing Right\n");
-        root->dir = (*new_node);
-        process_word(root->esq, &(*new_node), gram, word);
-    }
-    */
+   //rework whole function. 
 }
 
 
