@@ -23,6 +23,7 @@ int testvar(gramatica , char , size_t );
 void print_tree(Node *);
 void process_word(Node *, gramatica , char *, size_t );
 void free_tree(Node *);
+char ** find_rule(char *, char);
 
 int main(void) 
 {
@@ -51,6 +52,7 @@ int main(void)
 
     gram_set(&gram); // Setting up the grammar
     gram_feed(arvore, gram.P); // Building the parse tree
+    find_rule(gram.P, 'b');
     printf("\ngram_feed success\n");
     print_tree(arvore); // Printing the parse tree
     printf("\nprint_tree success\n");
@@ -287,7 +289,7 @@ void process_word(Node *root, gramatica gram, char *word, size_t w) {// process_
     char c[w];
     root = (Node *)malloc(sizeof(Node));
     if(root == NULL)
-        return -1;
+        return;
 
     for(i = 0; *word != '\0'; i++)
     {
@@ -324,7 +326,7 @@ void free_tree(Node *root) {
     free(root);
 }
 
-void find_rule(char *rules, char var, char res)
+char ** find_rule(char *rules, char var)
 {
     bool s = false;
     char **p;
@@ -340,23 +342,17 @@ void find_rule(char *rules, char var, char res)
             case ';':
                 s = false;
                 break;
-
-            case var:
-                s = false;
-                *p = rules;
-                p++;
-                break;
-
-            case res:
-                s = true;
-                while(*rules != '\0')
-                    rules--;
-                *p = rules;
-                p++;
-                break;
         }
-    }while(*rules != '\0');
 
+        if(*rules == var && s == false)
+        {
+            *(p) = &var;
+            printf("Value is in char %s and in int %i", var, var);
+            p++;
+        }
+    rules++;
+    }while(*rules != '\0');
+    return p;
 }
 
 
