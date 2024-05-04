@@ -7,6 +7,15 @@
 #include "gram.h"
 #endif
 
+// To be used in this function
+//    p = find_rule(gram.P, c);
+//    while(*(*p) != '\0')
+//    {
+//        printf("\n MATCH %c\n", *(*p));
+//        *p++;
+//    }
+
+
 void process_word(Node *root, gramatica gram, char *word, size_t w) { // for reference process_word(palavra, &arvore, gram, word)
     //rework whole function. 
     int i = 0, j = 0;
