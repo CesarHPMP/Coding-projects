@@ -10,49 +10,51 @@
 
 char ** find_rule(char *, char , const int );
 void process_word(Node *, gramatica , char *, size_t );
-
-// To be used in this function
-//    p = find_rule(gram.P, c);
-    
+int check_word(char *, Node *, char *, gramatica);
+int check_word_default(char *, Node *, gramatica);
 
 
 void process_word(Node *root, gramatica gram, char *word, size_t w)
-{ // for reference process_word(palavra, gram, word, strlen(word))
-    //rework whole function. 
+{ 
+    // for reference process_word(palavra, gram, word, strlen(word))
+    // Rework the whole function.
     int i = 0;
-    char c[w];
-    char *temp = (char *)malloc(sizeof(char *));
     char **matches = (char **)malloc(100 * sizeof(char **));
     
-    if(root == NULL)
-        root = (Node *)malloc(sizeof(Node *));
+    if (root == NULL)
+    {
+        root = (Node *)malloc(sizeof(Node));
+    }
 
-    if(root == NULL)
+    if (root == NULL)
+    {
         return;
+    }
 
-    if(root->token != NULL)
+    if (root->token != NULL)
+    {
         goto end;
+    }
 
-    
     matches = find_rule(gram.P, *word, 0);
     
     root->token = (char *)malloc(sizeof(*matches));
-    if(root->token == NULL)
+    
+    if (root->token == NULL)
+    {
         return;
+    }
 
-    while(matches[i] != NULL)
+    while (matches[i] != NULL)
     {
         printf("\nIN LOOP FOR ROOT->TOKEN\n");
-        if(!test_rule_product(matches[i], word, gram))
+        if (!test_rule_product(matches[i], word, gram))
         {
             matches[i] = NULL;
             continue;
-        }
-        
-        while(*matches[i] != ':')
-            matches[i]++;
+        } 
 
-        while(*matches[i] != ';')
+        while (*matches[i] != ';')
         {
             *root->token = *matches[i];
             root->token++;
@@ -61,20 +63,42 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
         }
         i++;
     }
-    if(root->token != NULL)
+
+    if (root->token != NULL)
+    {
         printf("\nSUCCESSFUL PROCESS FOR %s", root->token);
+    }
     else
     {
         printf("\nROOT TOKEN NULL\n");
         return;
     }
+    printf("\nIN CHECK WORD\n");
+
+    if(check_word_default(word, root, gram))
+    {
+        printf("\nSUCCESSFUL WORD CREATION\n");
+        return;
+    }
+
+    else
+    {
+        printf("\nWORD GONE WRONG\n");
+    } 
 
 end:
-    if(root->esq == NULL)
+
+    word++;
+    if (root->esq == NULL)
+    {
+        printf("\nGOING LEFT\n");
         return process_word(root->esq, gram, word, strlen(word));
+    }
     
+    printf("\nGOING RIGHT\n");
     return process_word(root->dir, gram, word, strlen(word));
 }
+
 
 char ** find_rule(char *rules, char var, const int n)
 {// 1 to find rule and 0 to find product
@@ -133,4 +157,71 @@ char ** find_rule(char *rules, char var, const int n)
     return p;
 }
 
+int check_word_default(char *word, Node *tree, gramatica gram)
+{
+    char *new_word = ""; // Default new_word
+    
+    return check_word(word, tree, new_word, gram); // Call the overloaded function
+}
+
+int check_word(char *word, Node *tree, char *new_word, gramatica gram)
+{
+    // Declare variables
+    int i;
+    char current_char;
+    int len;
+
+    // Check if the tree is NULL
+    if (tree == NULL)
+        return 0;
+
+    // Check if the token of the current node is not NULL
+    if (tree->token != NULL)
+    {
+        // Loop through the token characters
+        i = 0;
+        while (tree->token[i] != '\0')
+        {
+            printf("\nINSIDE TREE TOKEN LOOP\n");
+            current_char = tree->token[i];
+            // Check if the current character is not a variable
+            if (!testvar(gram, current_char, 2))
+            {
+                printf("\n%c IS NOT A VAR\n", tree->token[i]);
+                // Append the current character to the new word
+                len = strlen(new_word);
+                new_word[len] = current_char;
+                new_word[len + 1] = '\0'; // Null-terminate the string
+            }
+            i++;
+        }
+    }
+
+    // Compare new_word with word
+    if (strcmp(new_word, word) == 0)
+    {
+        printf("Success: The new word matches the original word.\n");
+        return 1;
+    }
+    else
+    {
+        // Check the length of new_word compared to word
+        if (strlen(new_word) < strlen(word))
+        {
+            printf("Partial Success: The new word is shorter than the original word.\n");
+        }
+        else
+        {
+            printf("Failure: The new word does not match the original word.\n");
+            return 0; // Return to exit the function in case of failure
+        }
+    }
+
+    // Continue traversal to the left and right subtrees
+    if (tree->esq)
+        check_word(word, tree->esq, new_word, gram);
+
+    if (tree->dir)
+        check_word(word, tree->dir, new_word, gram);
+}
 
