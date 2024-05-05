@@ -13,17 +13,13 @@ void process_word(Node *, gramatica , char *, size_t );
 
 // To be used in this function
 //    p = find_rule(gram.P, c);
-//    while(*(*p) != '\0')
-//    {
-//        printf("\n MATCH %c\n", *(*p));
-//        *p++;
-//    }
+    
 
 
 void process_word(Node *root, gramatica gram, char *word, size_t w)
 { // for reference process_word(palavra, gram, word, strlen(word))
     //rework whole function. 
-    int i = 0, j = 0;
+    int i = 0;
     char c[w];
     char *temp = (char *)malloc(sizeof(char *));
     char **matches = (char **)malloc(100 * sizeof(char **));
@@ -40,26 +36,43 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
     
     matches = find_rule(gram.P, *word, 0);
     
+    root->token = (char *)malloc(sizeof(*matches));
+    if(root->token == NULL)
+        return;
+
     while(matches[i] != NULL)
     {
+        printf("\nIN LOOP FOR ROOT->TOKEN\n");
         if(!test_rule_product(matches[i], word, gram))
         {
             matches[i] = NULL;
             continue;
         }
+        
         while(*matches[i] != ':')
             matches[i]++;
+
         while(*matches[i] != ';')
         {
-            root->token = (char *)malloc(sizeof(char *));
             *root->token = *matches[i];
             root->token++;
+            printf("\n%s MATCH SET FOR ROOT->TOKEN %p\n", *matches[i], root->token);
             matches[i]++;
         }
+        i++;
     }
-    
+    if(root->token != NULL)
+        printf("\nSUCCESSFUL PROCESS FOR %s", root->token);
+    else
+    {
+        printf("\nROOT TOKEN NULL\n");
+        return;
+    }
+
 end:
-    return process_word(root->esq, gram, word, strlen(word));
+    if(root->esq == NULL)
+        return process_word(root->esq, gram, word, strlen(word));
+    
     return process_word(root->dir, gram, word, strlen(word));
 }
 
@@ -94,7 +107,6 @@ char ** find_rule(char *rules, char var, const int n)
             
             temp++; 
             p[match_count] = temp;
-            printf("Value is in char %c and in memory %p\n", *temp, (void *)temp);
             match_count++;
         } 
         if (*rules == var && s && n == 0) 
@@ -106,7 +118,6 @@ char ** find_rule(char *rules, char var, const int n)
             
             temp++;
             p[match_count] = temp;
-            printf("Value is in char %c and in memory %p\n", *temp, (void *)temp);
             match_count++;
         } 
         rules++;
