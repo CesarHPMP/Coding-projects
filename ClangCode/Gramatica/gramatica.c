@@ -45,6 +45,10 @@ int main(void)
     word = strdup(buff);
     
     process_word(palavra, gram, word, strlen(word)); // Generating the word
+    
+    printf("\nTree is built\n");
+
+    print_tree(palavra);
     printf("Generated word: %s\n", word); // Printing the generated word
     // Free allocated memory for the parse tree
     free_tree(arvore);
