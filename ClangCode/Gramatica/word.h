@@ -13,12 +13,11 @@ void process_word(Node *, gramatica , char *, size_t );
 int check_word(char *, Node *, char *, gramatica);
 int check_word_default(char *, Node *, gramatica);
 
-
 void process_word(Node *root, gramatica gram, char *word, size_t w)
 { 
     // for reference process_word(palavra, gram, word, strlen(word))
     // Rework the whole function.
-    int i = 0;
+    int i = 0, j = 0;
     char **matches = (char **)malloc(100 * sizeof(char **));
     
     if (root == NULL)
@@ -38,12 +37,27 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
 
     matches = find_rule(gram.P, *word, 0);
     
+    i = 0;
+    j = 0;
+
+    while(matches[i] != NULL)
+    {
+        printf("\nMATCH %c COM ", *word);
+        for(int n = 0; matches[i][n] != ';'; n++)
+            printf("%c", matches[i][n]);
+        i++;
+        j++;
+    }
+    
     root->token = (char *)malloc(sizeof(*matches));
     
     if (root->token == NULL)
     {
         return;
     }
+
+    i = 0;
+    j = 0;
 
     while (matches[i] != NULL)
     {
@@ -54,14 +68,14 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
             continue;
         } 
 
-        while (*matches[i] != ';')
+        while (matches[i][j] != ';')
         {
-            *root->token = *matches[i];
+            *root->token = matches[i][j];
             root->token++;
-            printf("\n%s MATCH SET FOR ROOT->TOKEN %p\n", *matches[i], root->token);
-            matches[i]++;
+            printf("\n%c MATCH SET FOR ROOT->TOKEN %p\n", matches[i][j], root->token);
         }
         i++;
+        j++;
     }
 
     if (root->token != NULL)
@@ -206,7 +220,7 @@ int check_word(char *word, Node *tree, char *new_word, gramatica gram)
     else
     {
         // Check the length of new_word compared to word
-        if (strlen(new_word) < strlen(word))
+        if (strcmp(new_word, word) < 0)
         {
             printf("Partial Success: The new word is shorter than the original word.\n");
         }

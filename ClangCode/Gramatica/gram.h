@@ -19,7 +19,8 @@ int testvar(gramatica gram, char c, size_t opt)// 1 for N rules, 2 for alphabet,
 {
     if(c == ':')
         return 0;
-    int j, i, d;
+    
+    int j = 0, i = 0, d = 0;
     if(opt == 1 || opt == 3)
     {
         if (gram.S[0] == c) 
@@ -43,13 +44,9 @@ int testvar(gramatica gram, char c, size_t opt)// 1 for N rules, 2 for alphabet,
             {
                 return 0; // Match found
             }
+            printf("\n%c is not %c\n", c, gram.E[i]);
         } 
-    }
-    for(d = 0; d <= i && d <= j; d++)
-        {
-            printf("%c nao existe em E = %c ou N = %c\n", c, gram.E[d], gram.N[d]);
-        } 
-    
+    } 
     return 1; // No match found
 }
 
@@ -59,6 +56,8 @@ bool test_rule_product(char *rule, char *word, gramatica gram)
     int i = 0;
     char *temp = (char *)malloc(100 * sizeof(char)); // Allocate memory for temp
 
+    printf("\nIN TEST RULE PRODUCT\n");
+
     // Find the beginning of the rule
     while (*rule != ':')
         rule++;
@@ -67,8 +66,10 @@ bool test_rule_product(char *rule, char *word, gramatica gram)
     for (i = 0; *rule != ';' && *rule != '\0'; rule++) 
     {
         if (!testvar(gram, *rule, 2))
+        {
+            printf("\n%c IS NOT FROM ALPHABET\n", *rule);
             continue; // Skip recording characters that fail the testvar check
-                      
+        }             
         buff[i++] = *rule;
     }
 
@@ -76,15 +77,16 @@ bool test_rule_product(char *rule, char *word, gramatica gram)
 
     // Copy buff into temp
     strncpy(temp, buff, sizeof(buff) - 1);
-    temp[sizeof(buff) - 1] = '\0'; // Ensure temp is null-terminated
 
     // Compare temp with word
-    if (strcmp(temp, word) != 0) 
+    if (strcmp(temp, word) > 0) 
     {
+        printf("\nWORD DOES NOT MATCH\n");
         free(temp); // Free dynamically allocated memory
         return false;
     }
 
+    printf("\nWORD MATCH\n");
     free(temp); // Free dynamically allocated memory
     return true;
 }
