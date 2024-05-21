@@ -255,7 +255,8 @@ void removeproduto(Node **p)
     printf("Produto nao encontrado no estoque.\n");
 }
 
-/*void escreve_dados(Node *p, FILE *fw) {
+void escreve_dados(Node *p, FILE *fw)
+{
 
     fw = fopen("produtos.txt", "w");
 
@@ -271,4 +272,3 @@ void removeproduto(Node **p)
     fclose(fw);
     return;
 }
-*/

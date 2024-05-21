@@ -42,6 +42,7 @@ int testvar(gramatica gram, char c, size_t opt)// 1 for N rules, 2 for alphabet,
         {
             if(gram.E[i] == c)
             {
+                printf("\n%c is %c\n", c, gram.E[i]);
                 return 0; // Match found
             }
             printf("\n%c is not %c\n", c, gram.E[i]);
@@ -65,7 +66,7 @@ bool test_rule_product(char *rule, char *word, gramatica gram)
     // Loop through the rule to copy products into buff
     for (i = 0; *rule != ';' && *rule != '\0'; rule++) 
     {
-        if (!testvar(gram, *rule, 2))
+        if (!testvar(gram, *rule, 1))
         {
             printf("\n%c IS NOT FROM ALPHABET\n", *rule);
             continue; // Skip recording characters that fail the testvar check

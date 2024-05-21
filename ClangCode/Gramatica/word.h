@@ -65,17 +65,19 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
         if (!test_rule_product(matches[i], word, gram))
         {
             matches[i] = NULL;
+            i++;
             continue;
         } 
-
-        while (matches[i][j] != ';')
+    
+        for(j = 0; matches[i][j] != ';'; j++)
         {
+            matches[i] = (char *)malloc(sizeof(char));
             *root->token = matches[i][j];
             root->token++;
             printf("\n%c MATCH SET FOR ROOT->TOKEN %p\n", matches[i][j], root->token);
+            printf("\nJ TEM O VALOR DE %i\n", j);
         }
         i++;
-        j++;
     }
 
     if (root->token != NULL)
