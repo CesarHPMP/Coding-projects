@@ -48,6 +48,8 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
         i++;
         j++;
     }
+
+    printf("\nLoaded Char is %c\n", matches[0][0]);
     
     root->token = (char *)malloc(sizeof(*matches));
     
@@ -65,15 +67,24 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
         if (!test_rule_product(matches[i], word, gram))
         {
             matches[i] = NULL;
-            i++;
+            i+=1;
             continue;
         } 
+        printf("\nIN LOOP TO FEED TOKENS.\n");
+        for(int n = 0; matches[i][n] != ';'; n++)
+        {
+            if(matches[i] == NULL)
+                printf("\nMATCH DOES NOT EXIST!!!!!!!!");
+            printf("%c", matches[i][n]);
+        }
+
     
         for(j = 0; matches[i][j] != ';'; j++)
         {
-            matches[i] = (char *)malloc(sizeof(char));
+            root->token = (char *)malloc(sizeof(char));
             *root->token = matches[i][j];
             root->token++;
+            printf("\nroot token is %c and match value is %c\n", *root->token, matches[i][j]);
             printf("\n%c MATCH SET FOR ROOT->TOKEN %p\n", matches[i][j], root->token);
             printf("\nJ TEM O VALOR DE %i\n", j);
         }
