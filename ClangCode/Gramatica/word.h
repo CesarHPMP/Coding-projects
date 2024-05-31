@@ -19,7 +19,10 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
     // Rework the whole function.
     int i = 0, j = 0;
     char **matches = (char **)malloc(100 * sizeof(char **));
-    
+   
+    if(*word == '\0' || word == NULL)
+        return;
+
     if (root == NULL)
     {
         root = (Node *)malloc(sizeof(Node));
@@ -74,7 +77,10 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
         for(int n = 0; matches[i][n] != ';'; n++)
         {
             if(matches[i] == NULL)
+            {
                 printf("\nMATCH DOES NOT EXIST!!!!!!!!");
+                continue;
+            }
             printf("%c", matches[i][n]);
         }
 
@@ -94,24 +100,26 @@ void process_word(Node *root, gramatica gram, char *word, size_t w)
     if (root->token != NULL)
     {
         printf("\nSUCCESSFUL PROCESS FOR %s", root->token);
-    }
-    else
+    } else
     {
         printf("\nROOT TOKEN NULL\n");
         return;
     }
     printf("\nIN CHECK WORD\n");
 
-    if(check_word_default(word, root, gram))
+    switch(check_word_default(word, root, gram))
     {
-        printf("\nSUCCESSFUL WORD CREATION\n");
-        return;
-    }
+        case 1:
+            printf("\nSUCCESSFUL WORD CREATION\n");
+            return;
 
-    else
-    {
-        printf("\nWORD GONE WRONG\n");
-    } 
+        case 0:
+            printf("\nWORD GONE WRONG");
+            return;
+
+        default:
+            printf("\nWord is incomplete\n");
+    }
 
 end:
 
@@ -186,7 +194,7 @@ char ** find_rule(char *rules, char var, const int n)
 
 int check_word_default(char *word, Node *tree, gramatica gram)
 {
-    char *new_word = ""; // Default new_word
+    char *new_word = "\0"; // Default new_word
     
     return check_word(word, tree, new_word, gram); // Call the overloaded function
 }
@@ -223,6 +231,8 @@ int check_word(char *word, Node *tree, char *new_word, gramatica gram)
             i++;
         }
     }
+    else
+        return 0;
 
     // Compare new_word with word
     if (strcmp(new_word, word) == 0)
@@ -235,7 +245,11 @@ int check_word(char *word, Node *tree, char *new_word, gramatica gram)
         // Check the length of new_word compared to word
         if (strcmp(new_word, word) < 0)
         {
-            printf("Partial Success: The new word is shorter than the original word.\n");
+            if(tree->esq->token == NULL && tree->dir->token == NULL)
+            {
+                printf("Partial Success: The new word is shorter than the original word.\n");
+                return 1;
+            }
         }
         else
         {
@@ -246,9 +260,19 @@ int check_word(char *word, Node *tree, char *new_word, gramatica gram)
 
     // Continue traversal to the left and right subtrees
     if (tree->esq)
-        check_word(word, tree->esq, new_word, gram);
+    {
+        if(check_word(word, tree->esq, new_word, gram) == 0)
+            return 0;
+        else
+            return 1;
+    }
 
     if (tree->dir)
-        check_word(word, tree->dir, new_word, gram);
+    {
+        if(check_word(word, tree->dir, new_word, gram) == 0)
+            return 0;
+        else
+            return 1;
+    }
 }
 
