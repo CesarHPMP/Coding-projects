@@ -14,24 +14,16 @@ int main(void)
 {
     Node *palavra;
     palavra = (Node *)malloc(sizeof(Node)); // Allocate memory for the root node
-    if (palavra == NULL) {
+    
+    if (palavra == NULL)
+    {
         printf("Memory allocation failed for root node.\n");
         return -1;
     }
+    
     palavra->esq = NULL;
     palavra->dir = NULL;
     palavra->token = NULL;
-
-
-    Node *arvore;
-    arvore = (Node *)malloc(sizeof(Node *));
-    if (arvore == NULL) {
-        printf("Memory allocation failed for root node.\n");
-        return -1;
-    }
-    arvore->esq = NULL;
-    arvore->dir = NULL;
-    arvore->token = NULL;
 
     gramatica gram;
     char buff[100];
@@ -44,14 +36,14 @@ int main(void)
     buff[strlen(buff) - 1] = '\0'; // Removing the newline character
     word = strdup(buff);
     
-    process_word(palavra, gram, word, strlen(word)); // Generating the word
+    process_word(palavra, gram, word); // Generating the word
     
     printf("\nTree is built\n");
 
     print_tree(palavra);
     printf("Generated word: %s\n", word); // Printing the generated word
     // Free allocated memory for the parse tree
-    free_tree(arvore);
+    free_tree(palavra);
 
     return 0;
 }

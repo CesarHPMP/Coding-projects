@@ -42,10 +42,8 @@ int testvar(gramatica gram, char c, size_t opt)// 1 for N rules, 2 for alphabet,
         {
             if(gram.E[i] == c)
             {
-                printf("\n%c is %c\n", c, gram.E[i]);
                 return 0; // Match found
             }
-            printf("\n%c is not %c\n", c, gram.E[i]);
         } 
     } 
     return 1; // No match found
@@ -102,7 +100,9 @@ void print_tree(Node *root)
     if (root->token == NULL) {
         printf("Token: (null)\n");
     } else {
-        printf("Token: %s\n", root->token); // Print the current node's token
+        printf("\nToken: "); 
+        for(int i = 0; root->token[i] != '\0'; i++)
+            printf("%c", root->token[i]); // Print the current node's token
     }
 
     if(root->esq != NULL)
@@ -130,11 +130,6 @@ void free_tree(Node *root) {
 
     // Free memory for the right subtree
     free_tree(root->dir);
-
-    // Free memory for the token
-    if (root->token != NULL) {
-        free(root->token);
-    }
 
     // Free memory for the node itself
     free(root);

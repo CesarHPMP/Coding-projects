@@ -9,11 +9,11 @@
 
 
 char ** find_rule(char *, char , const int );
-void process_word(Node *, gramatica , char *, size_t );
+void process_word(Node *, gramatica , char *);
 int check_word(char *, Node *, char *, gramatica);
 int check_word_default(char *, Node *, gramatica);
 
-void process_word(Node *root, gramatica gram, char *word, size_t w)
+void process_word(Node *root, gramatica gram, char *word)
 { 
     // for reference process_word(palavra, gram, word, strlen(word))
     // Rework the whole function.
@@ -127,11 +127,11 @@ end:
     if (root->esq == NULL)
     {
         printf("\nGOING LEFT\n");
-        return process_word(root->esq, gram, word, strlen(word));
+        return process_word(root->esq, gram, word);
     }
     
     printf("\nGOING RIGHT\n");
-    return process_word(root->dir, gram, word, strlen(word));
+    return process_word(root->dir, gram, word);
 }
 
 
@@ -222,7 +222,6 @@ int check_word(char *word, Node *tree, char *new_word, gramatica gram)
             // Check if the current character is not a variable
             if (!testvar(gram, current_char, 2))
             {
-                printf("\n%c IS NOT A VAR\n", tree->token[i]);
                 // Append the current character to the new word
                 len = strlen(new_word);
                 new_word[len] = current_char;
