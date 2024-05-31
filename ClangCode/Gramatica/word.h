@@ -204,7 +204,7 @@ int check_word(char *word, Node *tree, char *new_word, gramatica gram)
     // Declare variables
     int i;
     char current_char;
-    int len;
+    int len = 0;
 
     // Check if the tree is NULL
     if (tree == NULL)
@@ -245,7 +245,7 @@ int check_word(char *word, Node *tree, char *new_word, gramatica gram)
         // Check the length of new_word compared to word
         if (strcmp(new_word, word) < 0)
         {
-            if(tree->esq->token == NULL && tree->dir->token == NULL)
+            if(tree->esq == NULL && tree->dir == NULL)
             {
                 printf("Partial Success: The new word is shorter than the original word.\n");
                 return 1;

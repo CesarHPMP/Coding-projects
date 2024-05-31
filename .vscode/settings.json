@@ -1,0 +1,5 @@
+{
+    "files.autoSave": "onWindowChange",
+    "editor.renderWhitespace": "none",
+    "editor.cursorStyle": "block"
+}
